@@ -1396,6 +1396,10 @@ static void connectWifi() {
 }
 
 void setup() {
+  // LED RGB della scheda spento (GPIO48 sulle DevKitC-1 v1.0, GPIO38 sulle v1.1).
+  // Il LED rosso di alimentazione è collegato direttamente e non si può spegnere dal programma.
+  rgbLedWrite(48, 0, 0, 0);
+  rgbLedWrite(38, 0, 0, 0);
   Serial.begin(115200);
   delay(500);
   LOG("AmbiHue per ESP32-S3");
