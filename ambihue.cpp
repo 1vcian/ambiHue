@@ -17,6 +17,10 @@
 #include "config.h"
 #include "web_page.h"
 
+#ifndef TV_OFF_CONFIRM_MS
+#define TV_OFF_CONFIRM_MS 15000   // TV data per spenta solo dopo tanto tempo senza risposta
+#endif
+
 // =====================================================================
 // Utilità
 // =====================================================================
@@ -1001,7 +1005,7 @@ static void tvTask(void*) {
   TvApi tv;
   tv.init();
   bool seenConfig = false;
-  uint32_t nextCheck = 0, darkSince = 0, offSince = 0;
+  uint32_t nextCheck = 0, darkSince = 0, offSince = 0, badSince = 0;
 
   for (;;) {
     uint32_t now = millis();
@@ -1009,10 +1013,16 @@ static void tvTask(void*) {
       nextCheck = now + POWER_CHECK_MS;
       int cfg = tv.config();
       if (cfg == 1 && !seenConfig) { seenConfig = true; LOG("TV accesa (configurazione Ambilight presente)."); }
+      // la TV ogni tanto non risponde: la si dà per spenta solo se non risponde per un po'
+      if (cfg == 1) badSince = 0;
+      else if (!badSince) badSince = now ? now : 1;
       Guard g;
-      gTvReachable = cfg != -1;
-      if (cfg == -1) { gTvOn = 0; gLayer.valid = false; }
-      else if (seenConfig) { gTvOn = cfg; if (!cfg) gLayer.valid = false; }
+      if (cfg == 1 || gTvOn != 1 || now - badSince >= TV_OFF_CONFIRM_MS) {
+        if (gTvOn == 1 && cfg != 1) LOG("TV spenta o non raggiungibile.");
+        gTvReachable = cfg != -1;
+        if (cfg == -1) { gTvOn = 0; gLayer.valid = false; }
+        else if (seenConfig) { gTvOn = cfg; if (!cfg) gLayer.valid = false; }
+      }
     }
 
     bool reachable, on;

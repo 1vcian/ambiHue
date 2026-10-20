@@ -43,6 +43,7 @@ static const LightDefault DEFAULT_LIGHTS[] = {
 #define TV_FPS          10     // letture al secondo dalla TV durante la sincronizzazione
 #define STREAM_FPS      50     // pacchetti al secondo verso il bridge
 #define POWER_CHECK_MS  3000   // ogni quanto controllare se la TV è accesa
+#define TV_OFF_CONFIRM_MS 15000 // la TV è spenta solo se non risponde per così tanto
 #define DARK_OFF_MS     10000  // riserva: TV spenta se i colori restano a 0 così a lungo
 #define AREA_SETTLE_MS  4000   // attesa dopo aver cambiato le lampade dell'area
 #define WATCH_MS        1000   // ogni quanto controllare scena cinema e stato delle lampade
