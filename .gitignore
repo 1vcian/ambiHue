@@ -1,0 +1,9 @@
+# password e chiavi: restano solo sul tuo computer
+config.h
+# impostazioni salvate dalla versione Python
+ambihue_settings.json
+ambihue_settings.json.tmp
+# compilazione
+build/
+.DS_Store
+__pycache__/
